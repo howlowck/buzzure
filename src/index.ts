@@ -2,7 +2,7 @@ import { config } from 'dotenv'
 config()
 import makeServer from './server'
 
-const port = process.env.port ?? process.env.PORT ?? 8080
+const port = process.env.port ?? process.env.PORT ?? 8585
 const server = makeServer({
   environment: (process.env.NODE_ENV as 'prod' | 'dev' | 'test') ?? 'prod',
 })
