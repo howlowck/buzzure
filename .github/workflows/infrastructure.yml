@@ -45,40 +45,42 @@ jobs:
       - run: terraform validate
 
       - run: terraform plan -no-color -out=prod.tfplan
-      - name: Publish Artifacts
-        uses: actions/upload-artifact@v1.0.0
-        with:
-          name: tfplan
-          path: ./terraform
-  terraform-apply-prod:
-    name: 'Terraform Apply Prod'
-    env:
-      ARM_CLIENT_ID: ${{ secrets.AZURE_AD_CLIENT_ID }}
-      ARM_CLIENT_SECRET: ${{ secrets.AZURE_AD_CLIENT_SECRET }}
-      ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-      ARM_TENANT_ID: ${{ secrets.AZURE_AD_TENANT_ID }}
-      ARM_THREEPOINTZERO_BETA_RESOURCES: 'true'
-    runs-on: ubuntu-latest
-    environment: prod
-    needs: terraform-plan-prod
-    steps:
-      - uses: hashicorp/setup-terraform@v1
-      - name: Download artifacts
-        uses: actions/download-artifact@v2
-        with:
-          name: tfplan
-      - run: >-
-          terraform init
-          -reconfigure
-          -backend-config="storage_account_name=${{ secrets.TF_BACKEND_STORAGE_ACCOUNT }}"
-          -backend-config="container_name=${{ secrets.TF_BACKEND_STORAGE_CONTAINER }}"
-          -backend-config="key=${{ secrets.TF_BACKEND_STORAGE_KEY }}"
-          -backend-config="resource_group_name=${{ secrets.TF_BACKEND_STORAGE_RESOURCE_GROUP }}"
+
       - run: terraform apply -auto-approve prod.tfplan
-      # - name: Terraform Apply
-      #   if: github.ref == 'refs/heads/main'
-      #   uses: hashicorp/setup-terraform@v1
+      # - name: Publish Artifacts
+      #   uses: actions/upload-artifact@v1.0.0
       #   with:
-      #     tf_actions_version: 0.14.8
-      #     tf_actions_subcommand: 'applya'
-      #     tf_actions_working_dir: './terraform'
+      #     name: tfplan
+      #     path: ./terraform
+  # terraform-apply-prod:
+  #   name: 'Terraform Apply Prod'
+  #   env:
+  #     ARM_CLIENT_ID: ${{ secrets.AZURE_AD_CLIENT_ID }}
+  #     ARM_CLIENT_SECRET: ${{ secrets.AZURE_AD_CLIENT_SECRET }}
+  #     ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+  #     ARM_TENANT_ID: ${{ secrets.AZURE_AD_TENANT_ID }}
+  #     ARM_THREEPOINTZERO_BETA_RESOURCES: 'true'
+  #   runs-on: ubuntu-latest
+  #   environment: prod
+  #   needs: terraform-plan-prod
+  #   steps:
+  #     - uses: hashicorp/setup-terraform@v1
+  #     - name: Download artifacts
+  #       uses: actions/download-artifact@v2
+  #       with:
+  #         name: tfplan
+  #     - run: >-
+  #         terraform init
+  #         -reconfigure
+  #         -backend-config="storage_account_name=${{ secrets.TF_BACKEND_STORAGE_ACCOUNT }}"
+  #         -backend-config="container_name=${{ secrets.TF_BACKEND_STORAGE_CONTAINER }}"
+  #         -backend-config="key=${{ secrets.TF_BACKEND_STORAGE_KEY }}"
+  #         -backend-config="resource_group_name=${{ secrets.TF_BACKEND_STORAGE_RESOURCE_GROUP }}"
+  #     - run: terraform apply -auto-approve prod.tfplan
+  # - name: Terraform Apply
+  #   if: github.ref == 'refs/heads/main'
+  #   uses: hashicorp/setup-terraform@v1
+  #   with:
+  #     tf_actions_version: 0.14.8
+  #     tf_actions_subcommand: 'applya'
+  #     tf_actions_working_dir: './terraform'
