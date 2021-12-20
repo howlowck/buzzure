@@ -46,6 +46,6 @@ resource "azurerm_storage_account" "buzzure" {
 }
 
 resource "azurerm_storage_table" "buzzure" {
-  name                 = "buzzure-table-${var.environment}"
+  name                 = "buzzuretable${var.environment}"
   storage_account_name = azurerm_storage_account.buzzure.name
 }
