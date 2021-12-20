@@ -16,12 +16,12 @@ data "azurerm_client_config" "current" {}
 
 #Create Resource Group
 resource "azurerm_resource_group" "buzzure" {
-  name     = "rg-buzzure"
+  name     = "rg-buzzure=${var.environment}"
   location = "eastus2"
 }
 
 resource "azurerm_service_plan" "buzzure" {
-  name                = "buzzure"
+  name                = "buzzure-${var.environment}"
   resource_group_name = azurerm_resource_group.buzzure.name
   location            = azurerm_resource_group.buzzure.location
   os_type             = "Linux"
@@ -29,10 +29,18 @@ resource "azurerm_service_plan" "buzzure" {
 }
 
 resource "azurerm_linux_web_app" "buzzure" {
-  name                = "buzzure"
+  name                = "buzzure-${var.environment}"
   resource_group_name = azurerm_resource_group.buzzure.name
   location            = azurerm_service_plan.buzzure.location
   service_plan_id     = azurerm_service_plan.buzzure.id
 
   site_config {}
+}
+
+resource "azurerm_storage_account" "buzzure" {
+  name                     = "sabuzzure${var.environment}"
+  resource_group_name      = azurerm_resource_group.buzzure.name
+  location                 = azurerm_resource_group.buzzure.location
+  account_tier             = "Standard"
+  account_replication_type = "LRS"
 }
