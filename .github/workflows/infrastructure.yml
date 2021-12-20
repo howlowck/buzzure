@@ -7,8 +7,8 @@ on:
   pull_request:
 
 jobs:
-  terraform:
-    name: 'Terraform'
+  terraform-plan-prod:
+    name: 'Terraform Plan Prod'
     env:
       ARM_CLIENT_ID: ${{ secrets.AZURE_AD_CLIENT_ID }}
       ARM_CLIENT_SECRET: ${{ secrets.AZURE_AD_CLIENT_SECRET }}
@@ -44,8 +44,29 @@ jobs:
 
       - run: terraform validate
 
-      - run: terraform plan -no-color
-
+      - run: terraform plan -no-color -out=prod.tfplan
+      - name: Publish Artifacts
+        uses: actions/upload-artifact@v1.0.0
+        with:
+          name: tfplan
+          path: ./terraform
+  terraform-apply-prod:
+    name: 'Terraform Apply Prod'
+    env:
+      ARM_CLIENT_ID: ${{ secrets.AZURE_AD_CLIENT_ID }}
+      ARM_CLIENT_SECRET: ${{ secrets.AZURE_AD_CLIENT_SECRET }}
+      ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      ARM_TENANT_ID: ${{ secrets.AZURE_AD_TENANT_ID }}
+      ARM_THREEPOINTZERO_BETA_RESOURCES: 'true'
+    runs-on: ubuntu-latest
+    environment: prod
+    needs: terraform-apply-prod
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: tfplan
+      - run: terraform apply -auto-approve prod.tfplan
       # - name: Terraform Apply
       #   if: github.ref == 'refs/heads/main'
       #   uses: hashicorp/setup-terraform@v1
