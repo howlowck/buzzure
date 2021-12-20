@@ -67,7 +67,14 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: tfplan
-      - run: terraform apply -auto-approve
+      - run: >-
+          terraform init
+          -reconfigure
+          -backend-config="storage_account_name=${{ secrets.TF_BACKEND_STORAGE_ACCOUNT }}"
+          -backend-config="container_name=${{ secrets.TF_BACKEND_STORAGE_CONTAINER }}"
+          -backend-config="key=${{ secrets.TF_BACKEND_STORAGE_KEY }}"
+          -backend-config="resource_group_name=${{ secrets.TF_BACKEND_STORAGE_RESOURCE_GROUP }}"
+      - run: terraform apply -auto-approve prod.tfplan
       # - name: Terraform Apply
       #   if: github.ref == 'refs/heads/main'
       #   uses: hashicorp/setup-terraform@v1
