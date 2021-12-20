@@ -16,7 +16,6 @@ jobs:
       ARM_TENANT_ID: ${{ secrets.AZURE_AD_TENANT_ID }}
       ARM_THREEPOINTZERO_BETA_RESOURCES: 'true'
     runs-on: ubuntu-latest
-    environment: prod
 
     # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
     defaults:
@@ -62,6 +61,7 @@ jobs:
     environment: prod
     needs: terraform-apply-prod
     steps:
+      - uses: hashicorp/setup-terraform@v1
       - name: Download artifacts
         uses: actions/download-artifact@v2
         with:
