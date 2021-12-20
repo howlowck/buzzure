@@ -59,7 +59,7 @@ jobs:
       ARM_THREEPOINTZERO_BETA_RESOURCES: 'true'
     runs-on: ubuntu-latest
     environment: prod
-    needs: terraform-apply-prod
+    needs: terraform-plan-prod
     steps:
       - uses: hashicorp/setup-terraform@v1
       - name: Download artifacts
