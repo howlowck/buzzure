@@ -11,8 +11,11 @@ export default ({ environment }: ServerConfig) => {
 
   app.use(bp.json())
   app.use(bp.urlencoded({ extended: true }))
-
   app.use('/api', apiRouter)
+
+  const staticServe = express.static(`${__dirname}/static`)
+  app.use('/', staticServe)
+  app.use('*', staticServe)
 
   // Error Handling
   app.use(function (
