@@ -46,7 +46,10 @@ jobs:
 
       - run: terraform plan -no-color -out=prod.tfplan
 
-      - run: terraform apply -auto-approve prod.tfplan
+      - run: >-
+          terraform apply
+          -var="azure_pubsub_connection_string=${{ secrets.AZURE_PUBSUB_CONNECTION_STRING }}"
+          -auto-approve prod.tfplan
       # - name: Publish Artifacts
       #   uses: actions/upload-artifact@v1.0.0
       #   with:
