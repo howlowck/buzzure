@@ -81,6 +81,16 @@ resource "azurerm_key_vault" "buzzure" {
   sku_name = "standard"
 }
 
+resource "azurerm_key_vault_access_policy" "pipeline_client" {
+  key_vault_id            = azurerm_key_vault.buzzure.id
+  tenant_id               = data.azurerm_client_config.current.tenant_id
+  object_id               = data.azurerm_client_config.current.object_id
+  key_permissions         = ["Create", "Update", "Get"]
+  secret_permissions      = ["Set", "Get", "Delete", "Purge"]
+  storage_permissions     = null
+  certificate_permissions = null
+}
+
 # resource "azurerm_key_vault_access_policy" "buzzure" {
 #   key_vault_id            = azurerm_key_vault.buzzure.id
 #   tenant_id               = azurerm_linux_web_app.buzzure.identity[0].tenant_id
@@ -95,6 +105,9 @@ resource "azurerm_key_vault_secret" "st_access_key_secret" {
   key_vault_id = azurerm_key_vault.buzzure.id
   name         = "storage-account-access-key"
   value        = azurerm_storage_account.buzzure.primary_access_key
+  depends_on = [
+    azurerm_key_vault_access_policy.pipeline_client
+  ]
 }
 
 resource "azurerm_key_vault_secret" "pubsub_connection_string_secret" {
