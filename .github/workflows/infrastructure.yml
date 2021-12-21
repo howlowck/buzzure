@@ -44,7 +44,11 @@ jobs:
 
       - run: terraform validate
 
-      - run: terraform plan -no-color -out=prod.tfplan
+      - run: >-
+          terraform plan
+          -no-color
+          -var="azure_pubsub_connection_string=${{ secrets.AZURE_PUBSUB_CONNECTION_STRING }}" 
+          -out=prod.tfplan
 
       - run: >-
           terraform apply
