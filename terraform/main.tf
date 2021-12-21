@@ -49,11 +49,11 @@ resource "azurerm_linux_web_app" "buzzure" {
   }
 
   app_settings = {
-    "NODE_ENV"                = "prod"
-    "AZ_STORAGE_ACCOUNT_NAME" = azurerm_storage_account.buzzure.name
-    "AZ_STORAGE_TABLE_NAME"   = azurerm_storage_table.buzzure.name
-    # "AZ_STORAGE_ACCOUNT_ACCESS_KEY" = format("@Microsoft.KeyVault(VaultName=%s;SecretName=%s)", azurerm_key_vault.buzzure.name, azurerm_key_vault_secret.st_access_key_secret.name)
-    # "AZ_PUBSUB_CONNECTRION_STRING"  = format("@Microsoft.KeyVault(VaultName=%s;SecretName=%s)", azurerm_key_vault.buzzure.name, azurerm_key_vault_secret.pubsub_connection_string_secret.name)
+    "NODE_ENV"                      = "prod"
+    "AZ_STORAGE_ACCOUNT_NAME"       = azurerm_storage_account.buzzure.name
+    "AZ_STORAGE_TABLE_NAME"         = azurerm_storage_table.buzzure.name
+    "AZ_STORAGE_ACCOUNT_ACCESS_KEY" = format("@Microsoft.KeyVault(VaultName=%s;SecretName=%s)", azurerm_key_vault.buzzure.name, azurerm_key_vault_secret.st_access_key_secret.name)
+    "AZ_PUBSUB_CONNECTRION_STRING"  = format("@Microsoft.KeyVault(VaultName=%s;SecretName=%s)", azurerm_key_vault.buzzure.name, azurerm_key_vault_secret.pubsub_connection_string_secret.name)
   }
 }
 
@@ -91,15 +91,15 @@ resource "azurerm_key_vault_access_policy" "pipeline_client" {
   certificate_permissions = null
 }
 
-# resource "azurerm_key_vault_access_policy" "buzzure" {
-#   key_vault_id            = azurerm_key_vault.buzzure.id
-#   tenant_id               = azurerm_linux_web_app.buzzure.identity[0].tenant_id
-#   object_id               = azurerm_linux_web_app.buzzure.identity[0].principal_id
-#   key_permissions         = ["Get", "List"]
-#   secret_permissions      = ["Get", "List"]
-#   storage_permissions     = null
-#   certificate_permissions = null
-# }
+resource "azurerm_key_vault_access_policy" "buzzure" {
+  key_vault_id            = azurerm_key_vault.buzzure.id
+  tenant_id               = azurerm_linux_web_app.buzzure.identity[0].tenant_id
+  object_id               = azurerm_linux_web_app.buzzure.identity[0].principal_id
+  key_permissions         = ["Get", "List"]
+  secret_permissions      = ["Get", "List"]
+  storage_permissions     = null
+  certificate_permissions = null
+}
 
 resource "azurerm_key_vault_secret" "st_access_key_secret" {
   key_vault_id = azurerm_key_vault.buzzure.id
