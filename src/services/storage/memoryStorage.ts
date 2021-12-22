@@ -1,13 +1,26 @@
 import { StorageClient } from '../../types'
 
-const data: { [key: string]: any } = {}
+const data: Record<string, { [key: string]: any }> = {}
 
 const memoryStorage: StorageClient = {
-  getItem: (name) => {
-    return data[name]
+  getItem: (partition, name, defaultValue) => {
+    if (!data[partition]) {
+      return defaultValue
+    }
+    return data[partition][name] ?? defaultValue
   },
-  setItem: (name, value) => {
-    data[name] = value
+  setItem: (partition, name, value) => {
+    if (!data[partition]) {
+      data[partition] = {}
+    }
+    data[partition][name] = value
+    return Promise.resolve()
+  },
+  deleteItem: (partition, name) => {
+    if (!data[partition]) {
+      return Promise.resolve()
+    }
+    data[partition][name] = undefined
     return Promise.resolve()
   },
 }

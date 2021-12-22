@@ -1,14 +1,26 @@
 import { FC, useState } from 'react'
 import { css } from '@emotion/react'
-import { TextField } from '@fluentui/react'
+import { PrimaryButton, TextField } from '@fluentui/react'
 import TeamListForm from '../teams/TeamListForm'
+import { RootState, useAppDispatch, useAppSelector } from '../../redux/store'
+import { updateGameName, addTeam } from '../../redux/slices/gameForm'
+import { useSelector } from 'react-redux'
+import { TeamInfo } from '../../../types'
 
 export default () => {
-  const [gameName, setGameName] = useState('')
-
+  const dispatch = useAppDispatch()
+  const gameName = useAppSelector<string>((state) => state.gameForm.gameName)
+  const setGameName = (val: string) => {
+    dispatch(updateGameName(val))
+  }
+  const teams = useAppSelector<TeamInfo[]>((state) => state.gameForm.teams)
+  const status = useAppSelector<string>(
+    (state) => state.gameForm.persistedState.status
+  )
   return (
     <div>
       <h1>Create a Game</h1>
+      <p>Status: {status}</p>
       <TextField
         label="Game Name"
         onChange={(evt) => {
@@ -16,7 +28,15 @@ export default () => {
         }}
         value={gameName}
       />
-      <TeamListForm />
+      <TeamListForm
+        teams={teams}
+        addTeam={(team: TeamInfo) => {
+          dispatch(addTeam(team))
+        }}
+      />
+      <br />
+      <br />
+      <PrimaryButton onClick={() => {}}>Create Game</PrimaryButton>
     </div>
   )
 }

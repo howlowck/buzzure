@@ -1,5 +1,4 @@
 import { FC, useState } from 'react'
-import { css } from '@emotion/react'
 import {
   Callout,
   ColorPicker,
@@ -10,18 +9,16 @@ import {
   IColor,
 } from '@fluentui/react'
 import { useBoolean, useId } from '@fluentui/react-hooks'
-
-import { Link } from 'wouter'
-
-type Team = {
-  name: string
-  color: string
-}
+import { TeamInfo } from '../../../types'
 
 const red = getColorFromString('#ff0000')!
 
-export default () => {
-  const [teams, setTeams] = useState<Team[]>([])
+type Props = {
+  teams: TeamInfo[]
+  addTeam: (team: TeamInfo) => void
+}
+
+const Component: FC<Props> = ({ teams, addTeam }) => {
   const [createTeamName, setCreateTeamName] = useState('')
   const [color, setColor] = useState(red)
 
@@ -81,11 +78,11 @@ export default () => {
       )}
       <PrimaryButton
         onClick={(evt) => {
-          const newTeam: Team = {
+          const newTeam: TeamInfo = {
             color: color.str,
             name: createTeamName,
           }
-          setTeams([...teams, newTeam])
+          addTeam(newTeam)
           setCreateTeamName('')
         }}
       >
@@ -94,3 +91,5 @@ export default () => {
     </div>
   )
 }
+
+export default Component
