@@ -3,7 +3,11 @@ import { css } from '@emotion/react'
 import { PrimaryButton, TextField } from '@fluentui/react'
 import TeamListForm from '../teams/TeamListForm'
 import { RootState, useAppDispatch, useAppSelector } from '../../redux/store'
-import { updateGameName, addTeam } from '../../redux/slices/gameForm'
+import {
+  updateGameName,
+  addTeam,
+  updateAdminPassword,
+} from '../../redux/slices/gameForm'
 import { useSelector } from 'react-redux'
 import { TeamInfo } from '../../../types'
 
@@ -17,6 +21,9 @@ export default () => {
   const status = useAppSelector<string>(
     (state) => state.gameForm.persistedState.status
   )
+  const adminPass = useAppSelector<string>(
+    (state) => state.gameForm.adminPassword
+  )
   return (
     <div>
       <h1>Create a Game</h1>
@@ -27,6 +34,14 @@ export default () => {
           setGameName(evt.currentTarget.value)
         }}
         value={gameName}
+      />
+      <TextField
+        label="Admin Password"
+        type="password"
+        onChange={(evt) =>
+          dispatch(updateAdminPassword(evt.currentTarget.value))
+        }
+        value={adminPass}
       />
       <TeamListForm
         teams={teams}

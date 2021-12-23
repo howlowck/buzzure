@@ -52,7 +52,9 @@
   "extensions": [
     "dbaeumer.vscode-eslint",
     "esbenp.prettier-vscode",
-    "mf.vscode-styled-components"
+    "mf.vscode-styled-components",
+    "editorconfig.editorconfig",
+    "humao.rest-client"
   ],
 
   // Use 'forwardPorts' to make a list of ports inside the container available locally.

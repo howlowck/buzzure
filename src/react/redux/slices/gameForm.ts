@@ -8,6 +8,7 @@ interface GameFormState {
     | { status: 'submitted' }
     | { status: 'error'; message: string }
   gameName: string
+  adminPassword: string
   teams: TeamInfo[]
   teamForm: {
     teamNameField: string
@@ -18,6 +19,7 @@ interface GameFormState {
 const initialState = {
   persistedState: { status: 'unsubmitted' },
   gameName: '',
+  adminPassword: '',
   teams: [],
   teamForm: {
     teamNameField: '',
@@ -41,6 +43,9 @@ const gameFormSlice = createSlice({
     updateTeamColor(state, action: PayloadAction<string>) {
       state.teamForm.teamColorField = action.payload
     },
+    updateAdminPassword(state, action: PayloadAction<string>) {
+      state.adminPassword = action.payload
+    },
     resetTeamForm(state) {
       state.teamForm = {
         teamNameField: '',
@@ -52,6 +57,7 @@ const gameFormSlice = createSlice({
 
 export const {
   addTeam,
+  updateAdminPassword,
   updateGameName,
   updateTeamColor,
   updateTeamField,

@@ -38,14 +38,16 @@ const makeApiRouter = (storage: StorageClient) => {
     }
   )
 
-  router.get<{ gameId: string }, ApiGetGameResponse>(
-    '/games/:gameId',
+  router.get<{ gameIdentifier: string }, ApiGetGameResponse>(
+    '/games/:gameIdentifier',
     async (req, res) => {
-      const { gameId } = req.params
-      const { data: gameInfo } = await axios.get<ApiGetGameResponse>(
-        `/api/games/${gameId}`
+      const { gameIdentifier } = req.params
+      const { data: gameInfo } = await storage.getItem(
+        gameIdentifier,
+        mainGameKey
       )
-      res.json(gameInfo)
+      const { gameId, gameName, teams } = gameInfo
+      res.json({ gameId, gameName, teams })
     }
   )
 

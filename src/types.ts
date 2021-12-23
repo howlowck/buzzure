@@ -32,17 +32,24 @@ export type Team = {
   color: string
 }
 
+export type PersistedGame = {
+  gameId: string
+  gameName: string
+  teams: Team[]
+  adminPassword: string
+}
+
 export type ApiCreateGameRequest = {
   gameName: string
   teams: TeamInfo[]
+  adminPassword: string
 }
 
 export type ApiCreateGameResponse = {
   gameId: string
 }
 
-export type ApiGetGameResponse = {
-  gameId: string
-  gameName: string
-  teams: Team[]
-}
+export type ApiGetGameResponse = Pick<
+  PersistedGame,
+  'gameId' | 'gameName' | 'teams'
+>
