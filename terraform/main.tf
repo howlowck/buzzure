@@ -53,7 +53,7 @@ resource "azurerm_linux_web_app" "buzzure" {
     "AZ_STORAGE_ACCOUNT_NAME"       = azurerm_storage_account.buzzure.name
     "AZ_STORAGE_TABLE_NAME"         = azurerm_storage_table.buzzure.name
     "AZ_STORAGE_ACCOUNT_ACCESS_KEY" = format("@Microsoft.KeyVault(VaultName=%s;SecretName=%s)", azurerm_key_vault.buzzure.name, azurerm_key_vault_secret.st_access_key_secret.name)
-    "AZ_PUBSUB_CONNECTRION_STRING"  = format("@Microsoft.KeyVault(VaultName=%s;SecretName=%s)", azurerm_key_vault.buzzure.name, azurerm_key_vault_secret.pubsub_connection_string_secret.name)
+    "AZ_PUBSUB_CONNECTION_STRING"   = format("@Microsoft.KeyVault(VaultName=%s;SecretName=%s)", azurerm_key_vault.buzzure.name, azurerm_key_vault_secret.pubsub_connection_string_secret.name)
   }
 }
 

@@ -5,6 +5,11 @@ on:
     branches:
       - main
 
+env:
+  AZURE_WEBAPP_NAME: buzzure-prod
+  AZURE_WEBAPP_PACKAGE_PATH: './'
+  NODE_VERSION: '14.x'
+
 jobs:
   terraform-plan-prod:
     name: 'Terraform Plan Prod'
