@@ -65,7 +65,7 @@ resource "azurerm_storage_account" "buzzure" {
   account_replication_type = "LRS"
 }
 
-resource "azurerm_storage_table" "buzzure_env" {
+resource "azurerm_storage_table" "buzzure" {
   name                 = "buzzuretable${var.environment}"
   storage_account_name = azurerm_storage_account.buzzure.name
 }
