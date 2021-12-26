@@ -9,6 +9,7 @@ import {
 } from '../types'
 
 const mainGameKey = '__game__'
+const adminKeyPartition = 'admin_keys'
 
 const makeApiRouter = (storage: StorageClient) => {
   const router = express.Router()
@@ -21,9 +22,9 @@ const makeApiRouter = (storage: StorageClient) => {
     '/games',
     async (req, res) => {
       const { gameName, teams, adminPassword } = req.body
-      const gameId = nanoid()
+      const gameId = `g-${nanoid()}`
       const teamsData = teams.map((_) => {
-        const teamId = nanoid()
+        const teamId = `t-${nanoid()}`
         return {
           teamId,
           ..._,
@@ -32,14 +33,20 @@ const makeApiRouter = (storage: StorageClient) => {
 
       const data = {
         gameName,
-        teams: teamsData,
+        teams: JSON.stringify(teamsData, null, ''),
         adminPassword,
       }
-
       console.log(gameId, mainGameKey, data)
-      await storage.setItem(gameId, mainGameKey, data)
-
-      res.json({ gameId })
+      const adminKey = `adminkey-${nanoid()}`
+      await Promise.all([
+        // Set Game Data
+        storage.setItem(gameId, mainGameKey, data),
+        // Generate admin key
+        storage.setItem(adminKeyPartition, adminKey, {
+          gameId,
+        }),
+      ])
+      res.json({ gameId, adminKey })
     }
   )
 
@@ -55,10 +62,21 @@ const makeApiRouter = (storage: StorageClient) => {
         throw new Error(`game with id: ${gameIdentifier} is not found`)
       }
       const { gameId, gameName, teams } = gameInfo
-      res.json({ gameId, gameName, teams })
+      res.json({ gameId, gameName, teams: JSON.parse(teams) })
     }
   )
-
+  router.get<{ adminKey: string }, ApiGetGameResponse>(
+    '/games/admin-key/:adminKey',
+    async (req, res) => {
+      const { adminKey } = req.params
+      const {
+        data: { gameId },
+      } = await storage.getItem(adminKeyPartition, adminKey)
+      const { data: gameInfo } = await storage.getItem(gameId, mainGameKey)
+      const { gameName, teams } = gameInfo
+      res.json({ gameId, gameName, teams: JSON.parse(teams) })
+    }
+  )
   router.post('/games/:sessionId/teams', async (req, res) => {
     const { sessionId } = req.params
     const { teamName } = req.body

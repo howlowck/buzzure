@@ -47,6 +47,7 @@ export type ApiCreateGameRequest = {
 
 export type ApiCreateGameResponse = {
   gameId: string
+  adminKey: string
 }
 
 export type ApiGetGameResponse = Pick<
