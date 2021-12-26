@@ -35,6 +35,7 @@ const Component: FC<Props> = ({ teams, addTeam }) => {
         return (
           <p
             style={{ color: _.color, fontSize: '1.5rem', fontWeight: 'bolder' }}
+            key={`${_.name}${_.color}`}
           >
             {_.name}
           </p>

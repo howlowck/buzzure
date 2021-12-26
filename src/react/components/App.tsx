@@ -1,9 +1,10 @@
 import React, { FC } from 'react'
 import { css } from '@emotion/react'
 import { PrimaryButton } from '@fluentui/react'
-import { Route } from 'wouter'
+import { Route, Switch } from 'wouter'
 import CreateGamePage from './pages/CreateGamePage'
 import HomePage from './pages/HomePage'
+import JoinGamePage from './pages/JoinGamePage'
 
 const App: FC = () => {
   return (
@@ -13,8 +14,13 @@ const App: FC = () => {
       `}
     >
       <h1>Buzzure</h1>
-      <Route path="/games/create">{(params) => <CreateGamePage />}</Route>
-      <Route path="/">{(params) => <HomePage />}</Route>
+      <Switch>
+        <Route path="/">{(params) => <HomePage />}</Route>
+        <Route path="/games/create">{(params) => <CreateGamePage />}</Route>
+        <Route path="/games/:gameId">
+          {({ gameId }) => <JoinGamePage gameId={gameId} />}
+        </Route>
+      </Switch>
     </div>
   )
 }

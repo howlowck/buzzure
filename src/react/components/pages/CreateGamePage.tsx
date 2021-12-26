@@ -10,6 +10,7 @@ import {
 } from '../../redux/slices/gameForm'
 import { useSelector } from 'react-redux'
 import { TeamInfo } from '../../../types'
+import { createGameThunk } from '../../redux/thunks/createGameThunk'
 
 export default () => {
   const dispatch = useAppDispatch()
@@ -24,6 +25,7 @@ export default () => {
   const adminPass = useAppSelector<string>(
     (state) => state.gameForm.adminPassword
   )
+
   return (
     <div>
       <h1>Create a Game</h1>
@@ -51,7 +53,24 @@ export default () => {
       />
       <br />
       <br />
-      <PrimaryButton onClick={() => {}}>Create Game</PrimaryButton>
+      <PrimaryButton
+        onClick={() => {
+          console.log('sending', {
+            teams,
+            gameName,
+            adminPassword: adminPass,
+          })
+          dispatch(
+            createGameThunk({
+              teams,
+              gameName,
+              adminPassword: adminPass,
+            })
+          )
+        }}
+      >
+        Create Game
+      </PrimaryButton>
     </div>
   )
 }

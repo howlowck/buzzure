@@ -70,6 +70,11 @@ resource "azurerm_storage_table" "buzzure" {
   storage_account_name = azurerm_storage_account.buzzure.name
 }
 
+resource "azurerm_storage_table" "buzzure" {
+  name                 = "buzzuretablehaodev"
+  storage_account_name = azurerm_storage_account.buzzure.name
+}
+
 resource "azurerm_key_vault" "buzzure" {
   name                       = "kvbuzzure${var.environment}"
   location                   = azurerm_resource_group.buzzure.location

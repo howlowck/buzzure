@@ -20,7 +20,7 @@ const makeApiRouter = (storage: StorageClient) => {
   router.post<{}, ApiCreateGameResponse, ApiCreateGameRequest>(
     '/games',
     async (req, res) => {
-      const { gameName, teams } = req.body
+      const { gameName, teams, adminPassword } = req.body
       const gameId = nanoid()
       const teamsData = teams.map((_) => {
         const teamId = nanoid()
@@ -29,10 +29,15 @@ const makeApiRouter = (storage: StorageClient) => {
           ..._,
         }
       })
-      await storage.setItem(gameId, mainGameKey, {
+
+      const data = {
         gameName,
         teams: teamsData,
-      })
+        adminPassword,
+      }
+
+      console.log(gameId, mainGameKey, data)
+      await storage.setItem(gameId, mainGameKey, data)
 
       res.json({ gameId })
     }
@@ -46,6 +51,9 @@ const makeApiRouter = (storage: StorageClient) => {
         gameIdentifier,
         mainGameKey
       )
+      if (!gameInfo) {
+        throw new Error(`game with id: ${gameIdentifier} is not found`)
+      }
       const { gameId, gameName, teams } = gameInfo
       res.json({ gameId, gameName, teams })
     }

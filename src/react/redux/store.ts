@@ -1,8 +1,10 @@
 import { configureStore, combineReducers } from '@reduxjs/toolkit'
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
 import gameFormReducer from './slices/gameForm'
+import gameReducer from './slices/game'
 
 const rootReducer = combineReducers({
+  game: gameReducer,
   gameForm: gameFormReducer,
   // ADD REDUCERS HERE
 })

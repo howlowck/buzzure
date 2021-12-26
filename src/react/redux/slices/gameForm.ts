@@ -1,11 +1,13 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
+import axios from 'axios'
 import { TeamInfo } from '../../../types'
+import { createGameThunk } from '../thunks/createGameThunk'
 
 interface GameFormState {
   persistedState:
     | { status: 'unsubmitted' }
     | { status: 'submitting' }
-    | { status: 'submitted' }
+    | { status: 'submitted'; gameId: string }
     | { status: 'error'; message: string }
   gameName: string
   adminPassword: string
@@ -52,6 +54,22 @@ const gameFormSlice = createSlice({
         teamColorField: state.teamForm.teamColorField,
       }
     },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(createGameThunk.pending, (state) => {
+        state.persistedState = { status: 'submitting' }
+      })
+      .addCase(createGameThunk.fulfilled, (state, action) => {
+        state.persistedState = {
+          status: 'submitted',
+          gameId: action.payload.gameId,
+        }
+      })
+      .addCase(createGameThunk.rejected, (state) => {
+        state.persistedState = { status: 'error', message: '' }
+      })
+    // Add reducers for additional action types here, and handle loading state as needed
   },
 })
 
