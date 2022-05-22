@@ -57,5 +57,5 @@ jobs:
           -destroy
           -out=prod.tfplan
  
-      - if: github.event.inputs.confirm === 'yes'
+      - if: github.event.inputs.confirm == 'yes'
         run: terraform apply -auto-approve -destroy
